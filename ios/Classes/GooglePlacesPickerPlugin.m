@@ -119,18 +119,27 @@ NSDictionary *filterTypes;
         [placeMap setObject:place.types forKey:@"types"];
     }
     if (place.photos != nil) {
-        NSMutableArray<NSString*> *photosArray = [NSMutableArray array];
-        for (GMSPlacePhotoMetadata* photo in place.photos) {
-            [photosArray addObject:photo.attributions];
+        [[GMSPlacesClient sharedClient] loadPlacePhoto:place.photos[0] callback:^(UIImage * _Nullable photo, NSError * _Nullable error) {
+          if (error == nil) {
+              NSData* data = UIImagePNGRepresentation(photo);
+              if (data) {
+                  [placeMap setObject:[FlutterStandardTypedData typedDataWithBytes:data] forKey:@"photo"];
+                  
+                  NSMutableDictionary *mutablePlaceMap = placeMap.mutableCopy;
+                  if (place.formattedAddress != nil) {
+                      mutablePlaceMap[@"address"] = place.formattedAddress;
+                  }
+                  _result(mutablePlaceMap);
+              }
+          }
+        }];
+    } else {
+        NSMutableDictionary *mutablePlaceMap = placeMap.mutableCopy;
+        if (place.formattedAddress != nil) {
+            mutablePlaceMap[@"address"] = place.formattedAddress;
         }
-        [placeMap setObject:photosArray forKey:@"photos"];
+        _result(mutablePlaceMap);
     }
-
-    NSMutableDictionary *mutablePlaceMap = placeMap.mutableCopy;
-    if (place.formattedAddress != nil) {
-        mutablePlaceMap[@"address"] = place.formattedAddress;
-    }
-    _result(mutablePlaceMap);
 }
 
 - (void)viewController:(nonnull GMSAutocompleteViewController *)viewController didFailAutocompleteWithError:(nonnull NSError *)error {

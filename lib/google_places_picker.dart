@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class Place {
@@ -12,7 +13,7 @@ class Place {
   String website;
   String openingHours;
   List<String> types;
-  List<String> photos;
+  Image photo;
   Map info;
 }
 
@@ -75,8 +76,8 @@ class PluginGooglePlacePicker {
     if (placeMap.containsKey("website")) {
       place.website = placeMap["website"];
     }
-    if (placeMap.containsKey("photos")) {
-      place.photos = placeMap["photos"];
+    if (placeMap.containsKey("photo")) {
+      place.photo = Image.memory(placeMap["photo"]);
     }
     if (placeMap.containsKey("types")) {
       place.types = placeMap["types"].cast<String>();
