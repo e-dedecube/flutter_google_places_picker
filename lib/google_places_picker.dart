@@ -10,10 +10,10 @@ class Place {
   String address;
   String phoneNumber;
   String website;
-  // AAA
   String openingHours;
-  String types;
-  String photos;
+  List<String> types;
+  List<String> photos;
+  Map info;
 }
 
 enum PlaceAutocompleteMode { MODE_OVERLAY, MODE_FULLSCREEN }
@@ -67,12 +67,19 @@ class PluginGooglePlacePicker {
     Place place = Place();
     place.name = placeMap["name"];
     place.id = placeMap["id"];
+    place.info = placeMap;
     place.address = placeMap["address"];
     if (placeMap.containsKey("phoneNumber")) {
       place.phoneNumber = placeMap["phoneNumber"];
     }
     if (placeMap.containsKey("website")) {
       place.website = placeMap["website"];
+    }
+    if (placeMap.containsKey("photos")) {
+      place.photos = placeMap["photos"];
+    }
+    if (placeMap.containsKey("types")) {
+      place.types = placeMap["types"];
     }
     if (placeMap["latitude"] is double) {
       place.latitude = placeMap["latitude"];
