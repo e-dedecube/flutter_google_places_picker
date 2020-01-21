@@ -110,7 +110,7 @@ NSDictionary *filterTypes;
         [placeMap setObject:place.phoneNumber forKey:@"phoneNumber"];
     }
     if (place.website != nil) {
-        [placeMap setObject:place.website forKey:@"website"];
+        [placeMap setObject:place.website.absoluteString forKey:@"website"];
     }
     if (place.openingHours != nil) {
         [placeMap setObject:@"" forKey:@"openingHours"];
@@ -119,7 +119,11 @@ NSDictionary *filterTypes;
         [placeMap setObject:place.types forKey:@"types"];
     }
     if (place.photos != nil) {
-        [placeMap setObject:place.photos forKey:@"photos"];
+        NSMutableArray<NSString*> *photosArray = [NSMutableArray array];
+        for (GMSPlacePhotoMetadata* photo in place.photos) {
+            [photosArray addObject:photo.attributions];
+        }
+        [placeMap setObject:photosArray forKey:@"photos"];
     }
 
     NSMutableDictionary *mutablePlaceMap = placeMap.mutableCopy;
