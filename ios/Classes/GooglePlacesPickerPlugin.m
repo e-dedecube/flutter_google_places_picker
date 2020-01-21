@@ -102,12 +102,26 @@ NSDictionary *filterTypes;
 
 - (void)viewController:(nonnull GMSAutocompleteViewController *)viewController didAutocompleteWithPlace:(nonnull GMSPlace *)place {
     [vc dismissViewControllerAnimated:YES completion:nil];
-    NSDictionary *placeMap = @{
-                               @"name" : place.name,
-                               @"latitude" : [NSString stringWithFormat:@"%.7f", place.coordinate.latitude],
-                               @"longitude" : [NSString stringWithFormat:@"%.7f", place.coordinate.longitude],
-                               @"id" : place.placeID,
-                               };
+    NSMutableDictionary *placeMap = [NSMutableDictionary dictionaryWithObject:place.name forKey:@"name"];
+    [placeMap setObject:[NSString stringWithFormat:@"%.7f", place.coordinate.latitude] forKey:@"latitude"];
+    [placeMap setObject:[NSString stringWithFormat:@"%.7f", place.coordinate.longitude] forKey:@"longitude"];
+    [placeMap setObject:place.placeID forKey:@"id"];
+    if (place.phoneNumber != nil) {
+        [placeMap setObject:place.phoneNumber forKey:@"phoneNumber"];
+    }
+    if (place.website != nil) {
+        [placeMap setObject:place.website forKey:@"website"];
+    }
+    if (place.openingHours != nil) {
+        [placeMap setObject:@"" forKey:@"openingHours"];
+    }
+    if (place.types != nil) {
+        [placeMap setObject:place.types forKey:@"types"];
+    }
+    if (place.photos != nil) {
+        [placeMap setObject:place.photos forKey:@"photos"];
+    }
+
     NSMutableDictionary *mutablePlaceMap = placeMap.mutableCopy;
     if (place.formattedAddress != nil) {
         mutablePlaceMap[@"address"] = place.formattedAddress;

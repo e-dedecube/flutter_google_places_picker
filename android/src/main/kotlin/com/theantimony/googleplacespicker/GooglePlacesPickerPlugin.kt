@@ -18,14 +18,13 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.lang.Exception
-
 
 class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegistry.ActivityResultListener, ActivityAware {
     var mActivity: Activity? = null
@@ -98,11 +97,11 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
     }
 
     private fun showAutocompletePicker(
-            mode: Int?,
-            bias: HashMap<String, Double>?,
-            restriction: HashMap<String, Double>?,
-            type: String?,
-            country: String?
+        mode: Int?,
+        bias: HashMap<String, Double>?,
+        restriction: HashMap<String, Double>?,
+        type: String?,
+        country: String?
     ) {
         val modeToUse = mode ?: 71
         val fields = listOf(
@@ -148,9 +147,6 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
                 mResult?.error("GooglePlayServicesRepairableException", e.message, null)
             }
         }
-
-
-
     }
 
     override fun onActivityResult(p0: Int, p1: Int, p2: Intent?): Boolean {
@@ -164,7 +160,11 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
             placeMap.put("longitude", place.latLng?.longitude ?: 0.0)
             placeMap.put("id", place.id ?: "")
             placeMap.put("name", place.name ?: "")
-            placeMap.put("address", place.address ?: "")
+            placeMap.put("openingHours", place.openingHours ?: "")
+            placeMap.put("types", place.types ?: "")
+            placeMap.put("phoneNumber", place.phoneNumber ?: "")
+            placeMap.put("website", place.website ?: "")
+            placeMap.put("photos", place.photos ?: "")
             mResult?.success(placeMap)
         } else if (p1 == AutocompleteActivity.RESULT_ERROR && p2 != null) {
             val status = Autocomplete.getStatusFromIntent(p2)
@@ -205,6 +205,10 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
 
     override fun onDetachedFromActivityForConfigChanges() {
         mActivity = null
+        mBinding?.removeActivityResultListener(this)
+        mBinding = null
+    }
+}
         mBinding?.removeActivityResultListener(this)
         mBinding = null
     }

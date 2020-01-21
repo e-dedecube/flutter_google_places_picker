@@ -8,6 +8,12 @@ class Place {
   String id;
   String name;
   String address;
+  String phoneNumber;
+  String website;
+  // AAA
+  String openingHours;
+  String types;
+  String photos;
 }
 
 enum PlaceAutocompleteMode { MODE_OVERLAY, MODE_FULLSCREEN }
@@ -58,21 +64,25 @@ class PluginGooglePlacePicker {
   }
 
   static Place _initPlaceFromMap(Map placeMap) {
-    if (placeMap["latitude"] is double) {
-      return new Place()
-        ..name = placeMap["name"]
-        ..id = placeMap["id"]
-        ..address = placeMap["address"]
-        ..latitude = placeMap["latitude"]
-        ..longitude = placeMap["longitude"];
-    } else {
-      return new Place()
-        ..name = placeMap["name"]
-        ..id = placeMap["id"]
-        ..address = placeMap["address"]
-        ..latitude = double.parse(placeMap["latitude"])
-        ..longitude = double.parse(placeMap["longitude"]);
+    Place place = Place();
+    place.name = placeMap["name"];
+    place.id = placeMap["id"];
+    place.address = placeMap["address"];
+    if (placeMap.containsKey("phoneNumber")) {
+      place.phoneNumber = placeMap["phoneNumber"];
     }
+    if (placeMap.containsKey("website")) {
+      place.website = placeMap["website"];
+    }
+    if (placeMap["latitude"] is double) {
+      place.latitude = placeMap["latitude"];
+      place.longitude = placeMap["longitude"];
+    } else {
+      place.latitude = double.parse(placeMap["latitude"]);
+      place.longitude = double.parse(placeMap["longitude"]);
+    }
+
+    return place;
   }
 
   static String _convertFilterTypeToString(TypeFilter type) {
