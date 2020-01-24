@@ -25,11 +25,19 @@ import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.lang.Exception
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.FetchPhotoResponse;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceResponse;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import android.graphics.Bitmap;
+import java.io.ByteArrayOutputStream;
 
 class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegistry.ActivityResultListener, ActivityAware {
     var mActivity: Activity? = null
     var mChannel: MethodChannel? = null
     var mBinding: ActivityPluginBinding? = null
+    var mPlace: PlacesClient? = null
 
     private var mResult: Result? = null
     private val mFilterTypes = mapOf(
@@ -88,6 +96,7 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
             if (!Places.isInitialized()) {
                 mActivity?.let {
                     Places.initialize(it.applicationContext, apiKey)
+                    mPlace = Places.createClient(it.applicationContext)
                 }
             }
             mResult?.success(null)
@@ -108,8 +117,13 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
                 Place.Field.ID,
                 Place.Field.ADDRESS,
                 Place.Field.NAME,
-                Place.Field.LAT_LNG
-        )
+                Place.Field.LAT_LNG,
+                Place.Field.PHONE_NUMBER,
+                Place.Field.WEBSITE_URI,
+                Place.Field.OPENING_HOURS,
+                Place.Field.TYPES,
+                Place.Field.PHOTO_METADATAS
+                )
         var intentBuilder = Autocomplete.IntentBuilder(if (modeToUse == 71) AutocompleteActivityMode.OVERLAY else AutocompleteActivityMode.FULLSCREEN, fields)
 
         bias?.let {
@@ -160,12 +174,41 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
             placeMap.put("longitude", place.latLng?.longitude ?: 0.0)
             placeMap.put("id", place.id ?: "")
             placeMap.put("name", place.name ?: "")
-            placeMap.put("openingHours", place.openingHours ?: "")
-            placeMap.put("types", place.types ?: "")
-            placeMap.put("phoneNumber", place.phoneNumber ?: "")
-            placeMap.put("website", place.website ?: "")
-            placeMap.put("photos", place.photos ?: "")
-            mResult?.success(placeMap)
+            placeMap.put("address", place.address ?: "")
+            if (!place.phoneNumber.isNullOrEmpty()) {
+                placeMap.put("phoneNumber", place.phoneNumber ?: "")
+            }
+            if (place.websiteUri != null) {
+                placeMap.put("website", place.websiteUri.toString() ?: "")
+            }
+            val arrayTypesTransformed = place.types
+            if (arrayTypesTransformed != null) {
+                val transformed = arrayTypesTransformed.map { t -> t.toString() }
+
+                placeMap.put("types", transformed ?: "")
+            }
+            val openingHours = place.openingHours
+            if (openingHours != null) {
+                val transformed = openingHours.weekdayText
+
+                placeMap.put("openingHoursWeekday", transformed ?: "")
+            }
+
+            val photoMetadatas = place.photoMetadatas
+            if (photoMetadatas != null) {
+                val photoRequest = FetchPhotoRequest.builder(photoMetadatas[0]).build();
+                mPlace?.fetchPhoto(photoRequest)?.addOnSuccessListener { fetchPhotoResponse ->
+                    val bitmap = fetchPhotoResponse.getBitmap();
+                    val stream = ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    val byteArray = stream.toByteArray();
+                    bitmap.recycle();
+                    placeMap.put("photo", byteArray)
+                    mResult?.success(placeMap)
+                }
+            } else {
+                mResult?.success(placeMap)
+            }
         } else if (p1 == AutocompleteActivity.RESULT_ERROR && p2 != null) {
             val status = Autocomplete.getStatusFromIntent(p2)
             mResult?.error("PLACE_AUTOCOMPLETE_ERROR", status.statusMessage, null)
@@ -205,10 +248,6 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
 
     override fun onDetachedFromActivityForConfigChanges() {
         mActivity = null
-        mBinding?.removeActivityResultListener(this)
-        mBinding = null
-    }
-}
         mBinding?.removeActivityResultListener(this)
         mBinding = null
     }

@@ -113,7 +113,9 @@ NSDictionary *filterTypes;
         [placeMap setObject:place.website.absoluteString forKey:@"website"];
     }
     if (place.openingHours != nil) {
-        [placeMap setObject:@"" forKey:@"openingHours"];
+        GMSOpeningHours *openingHours = place.openingHours;
+        NSArray *weekdayText = openingHours.weekdayText;
+        [placeMap setObject:openingHours.weekdayText forKey:@"openingHoursWeekday"];
     }
     if (place.types != nil) {
         [placeMap setObject:place.types forKey:@"types"];

@@ -11,7 +11,7 @@ class Place {
   String address;
   String phoneNumber;
   String website;
-  String openingHours;
+  List<String> openingHoursWeekday;
   List<String> types;
   Image photo;
   Map info;
@@ -81,6 +81,10 @@ class PluginGooglePlacePicker {
     }
     if (placeMap.containsKey("types")) {
       place.types = placeMap["types"].cast<String>();
+    }
+    if (placeMap.containsKey("openingHoursWeekday")) {
+      place.openingHoursWeekday =
+          placeMap["openingHoursWeekday"].cast<String>();
     }
     if (placeMap["latitude"] is double) {
       place.latitude = placeMap["latitude"];
