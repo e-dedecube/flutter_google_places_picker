@@ -194,19 +194,19 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
 
                 placeMap.put("openingHoursWeekday", transformed ?: "")
             }
-            val addressComponents = place.addressComponents
+            val addressComponents = place.addressComponents ?: emptyList()
             if (addressComponents != null) {
                 var locality: String = ""
                 var country: String = ""
-                addressComponents.forEach {
-                    if (it.types.contains("locality")) {
-                        val transformed = it.name;
+                for (address in addressComponents) {
+                    if (address.types.contains("locality")) {
+                        val transformed = address.name;
                         locality = transformed
-                    } else if (it.types.contains("country")) {
-                        val transformed = it.name;
+                    } else if (address.types.contains("country")) {
+                        val transformed = address.name;
                         country = transformed
-                    } else if (it.types.contains("administrative_area_level_3") && locality == "") {
-                        val transformed = it.name;
+                    } else if (address.types.contains("administrative_area_level_3") && locality == "") {
+                        val transformed = address.name;
                         locality = transformed
                     }
                 }
