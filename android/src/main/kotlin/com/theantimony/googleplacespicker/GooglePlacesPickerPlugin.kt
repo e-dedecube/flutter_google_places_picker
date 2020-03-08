@@ -196,10 +196,9 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
             }
             val addressComponents = place.addressComponents
             if (addressComponents != null) {
-                val locality: String = ""
-                val country: String = ""
-                for (var i = 0; i < addressComponents.length; i++) {
-                    val address = addressComponents[i];
+                var locality: String = ""
+                var country: String = ""
+                for (address in addressComponents) {
                     if (address.types.contains("locality")) {
                         val transformed = address.name;
                         locality = transformed
