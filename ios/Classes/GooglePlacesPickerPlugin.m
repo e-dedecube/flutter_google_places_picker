@@ -115,13 +115,13 @@ NSDictionary *filterTypes;
     if (place.openingHours != nil) {
         GMSOpeningHours *openingHours = place.openingHours;
         NSArray *weekdayText = openingHours.weekdayText;
-        [placeMap setObject:openingHours.weekdayText forKey:@"openingHoursWeekday"];
+        [placeMap setObject:weekdayText forKey:@"openingHoursWeekday"];
     }
     if (place.types != nil) {
         [placeMap setObject:place.types forKey:@"types"];
     }
     if (place.formattedAddress != nil) {
-        [placeMap setObject:place.formattedAddress forKey@"address"];
+        [placeMap setObject:place.formattedAddress forKey:@"address"];
     }
 
     if (place.addressComponents != nil) {
