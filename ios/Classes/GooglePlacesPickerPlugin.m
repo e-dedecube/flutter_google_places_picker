@@ -125,14 +125,20 @@ NSDictionary *filterTypes;
     }
 
     if (place.addressComponents != nil) {
+        NSString *locality = @"";
+        NSString *country = @"";
         for (GMSAddressComponent *component in place.addressComponents) {
             NSArray *types = component.types;
             if ([types containsObject:@"locality"]) {
-                [placeMap setObject:component.name forKey:@"locality"];
+               locality = component.name;
             } else if ([types containsObject:@"country"]) {
-                [placeMap setObject:component.name forKey:@"country"];
+               country = component.name;
+            } else if ([types containsObject:@"administrative_area_level_3"] && [locality isEqualToString:@""]) {
+               locality = component.name;
             }
         }
+        [placeMap setObject:locality forKey:@"locality"];
+        [placeMap setObject:country forKey:@"country"];
     }
                   
     if (place.photos != nil) {

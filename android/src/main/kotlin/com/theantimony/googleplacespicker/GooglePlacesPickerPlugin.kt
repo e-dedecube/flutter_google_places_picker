@@ -196,16 +196,23 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
             }
             val addressComponents = place.addressComponents
             if (addressComponents != null) {
+                val locality: String = ""
+                val country: String = ""
                 for (var i = 0; i < addressComponents.length; i++) {
                     val address = addressComponents[i];
                     if (address.types.contains("locality")) {
                         val transformed = address.name;
-                        placeMap.put("locality", transformed ?: "")
+                        locality = transformed
                     } else if (address.types.contains("country")) {
                         val transformed = address.name;
-                        placeMap.put("country", transformed ?: "")
+                        country = transformed
+                    } else if (address.types.contains("administrative_area_level_3") && locality == "") {
+                        val transformed = address.name;
+                        locality = transformed
                     }
                 }
+                placeMap.put("locality", locality ?: "")
+                placeMap.put("country", country ?: "")
             }
             val photoMetadatas = place.photoMetadatas
             if (photoMetadatas != null) {
