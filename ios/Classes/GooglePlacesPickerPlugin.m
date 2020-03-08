@@ -126,7 +126,7 @@ NSDictionary *filterTypes;
 
     if (place.addressComponents != nil) {
         for (GMSAddressComponent *component in place.addressComponents) {
-            NSArray *types = component.types
+            NSArray *types = component.types;
             if ([types containsObject:@"locality"]) {
                 [placeMap setObject:component.name forKey@"locality"];
             } else if ([types containsObject:@"country"]) {
