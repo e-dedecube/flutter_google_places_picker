@@ -15,6 +15,8 @@ class Place {
   List<String> types;
   Image photo;
   Map info;
+  String locality;
+  String country;
 }
 
 enum PlaceAutocompleteMode { MODE_OVERLAY, MODE_FULLSCREEN }
@@ -93,7 +95,12 @@ class PluginGooglePlacePicker {
       place.latitude = double.parse(placeMap["latitude"]);
       place.longitude = double.parse(placeMap["longitude"]);
     }
-
+    if (placeMap.containsKey("locality")) {
+      place.locality = placeMap["locality"];
+    }
+    if (placeMap.containsKey("country")) {
+      place.country = placeMap["country"];
+    }
     return place;
   }
 

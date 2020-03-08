@@ -122,7 +122,8 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
                 Place.Field.WEBSITE_URI,
                 Place.Field.OPENING_HOURS,
                 Place.Field.TYPES,
-                Place.Field.PHOTO_METADATAS
+                Place.Field.PHOTO_METADATAS,
+                Place.Field.ADDRESS_COMPONENTS
                 )
         var intentBuilder = Autocomplete.IntentBuilder(if (modeToUse == 71) AutocompleteActivityMode.OVERLAY else AutocompleteActivityMode.FULLSCREEN, fields)
 
@@ -193,7 +194,19 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
 
                 placeMap.put("openingHoursWeekday", transformed ?: "")
             }
-
+            val addressComponents = place.addressComponents
+            if (addressComponents != null) {
+                for (var i = 0; i < addressComponents.length; i++) {
+                    val address = addressComponents[i];
+                    if (address.types.contains("locality")) {
+                        val transformed = address.name;
+                        placeMap.put("locality", transformed ?: "")
+                    } else if (address.types.contains("country")) {
+                        val transformed = address.name;
+                        placeMap.put("country", transformed ?: "")
+                    }
+                }
+            }
             val photoMetadatas = place.photoMetadatas
             if (photoMetadatas != null) {
                 val photoRequest = FetchPhotoRequest.builder(photoMetadatas[0]).build();

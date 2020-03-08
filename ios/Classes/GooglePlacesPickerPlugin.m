@@ -120,6 +120,21 @@ NSDictionary *filterTypes;
     if (place.types != nil) {
         [placeMap setObject:place.types forKey:@"types"];
     }
+    if (place.formattedAddress != nil) {
+        [placeMap setObject:place.formattedAddress forKey@"address"];
+    }
+
+    if (place.addressComponents != nil) {
+        for (GMSAddressComponent *component in place.addressComponents) {
+            NSArray *types = component.types
+            if ([types containsObject:@"locality"]) {
+                [placeMap setObject:component.name forKey@"locality"];
+            } else if ([types containsObject:@"country"]) {
+                [placeMap setObject:component.name forKey@"country"];
+            }
+        }
+    }
+                  
     if (place.photos != nil) {
         [[GMSPlacesClient sharedClient] loadPlacePhoto:place.photos[0] callback:^(UIImage * _Nullable photo, NSError * _Nullable error) {
           if (error == nil) {
@@ -128,18 +143,12 @@ NSDictionary *filterTypes;
                   [placeMap setObject:[FlutterStandardTypedData typedDataWithBytes:data] forKey:@"photo"];
                   
                   NSMutableDictionary *mutablePlaceMap = placeMap.mutableCopy;
-                  if (place.formattedAddress != nil) {
-                      mutablePlaceMap[@"address"] = place.formattedAddress;
-                  }
                   _result(mutablePlaceMap);
               }
           }
         }];
     } else {
         NSMutableDictionary *mutablePlaceMap = placeMap.mutableCopy;
-        if (place.formattedAddress != nil) {
-            mutablePlaceMap[@"address"] = place.formattedAddress;
-        }
         _result(mutablePlaceMap);
     }
 }
