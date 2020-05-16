@@ -21,7 +21,7 @@ class Place {
 
 enum PlaceAutocompleteMode { MODE_OVERLAY, MODE_FULLSCREEN }
 
-enum TypeFilter { ADDRESS, CITIES, ESTABLISHMENT, GEOCODE, REGIONS }
+enum TypeFilter { ADDRESS, CITIES, ESTABLISHMENT, GEOCODE, REGIONS, BOTH }
 
 class LocationBias {
   double northEastLat;
@@ -119,6 +119,8 @@ class PluginGooglePlacePicker {
         return "geocode";
       case TypeFilter.REGIONS:
         return "regions";
+      case TypeFilter.BOTH:
+        return "geocode|establishment";
     }
     return "";
   }
