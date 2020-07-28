@@ -205,7 +205,16 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
                     } else if (address.types.contains("country")) {
                         val transformed = address.name;
                         country = transformed
+                    } else if (address.types.contains("postal_town") && locality == "") {
+                        val transformed = address.name;
+                        locality = transformed
                     } else if (address.types.contains("administrative_area_level_3") && locality == "") {
+                        val transformed = address.name;
+                        locality = transformed
+                    } else if (address.types.contains("administrative_area_level_2") && locality == "") {
+                        val transformed = address.name;
+                        locality = transformed
+                    } else if (address.types.contains("administrative_area_level_1") && locality == "") {
                         val transformed = address.name;
                         locality = transformed
                     }

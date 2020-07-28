@@ -133,7 +133,13 @@ NSDictionary *filterTypes;
                locality = component.name;
             } else if ([types containsObject:@"country"]) {
                country = component.name;
+            } else if ([types containsObject:@"postal_town"] && [locality isEqualToString:@""]) {
+               locality = component.name;
             } else if ([types containsObject:@"administrative_area_level_3"] && [locality isEqualToString:@""]) {
+               locality = component.name;
+            } else if ([types containsObject:@"administrative_area_level_2"] && [locality isEqualToString:@""]) {
+               locality = component.name;
+            } else if ([types containsObject:@"administrative_area_level_1"] && [locality isEqualToString:@""]) {
                locality = component.name;
             }
         }
