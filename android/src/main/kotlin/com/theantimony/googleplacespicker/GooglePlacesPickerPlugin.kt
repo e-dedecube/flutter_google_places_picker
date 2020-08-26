@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.Bitmap
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.maps.model.LatLng
@@ -11,6 +12,8 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.api.net.FetchPhotoRequest
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
@@ -24,14 +27,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
+import java.io.ByteArrayOutputStream
 import java.lang.Exception
-import com.google.android.libraries.places.api.net.FetchPhotoRequest;
-import com.google.android.libraries.places.api.net.FetchPhotoResponse;
-import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FetchPlaceResponse;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import android.graphics.Bitmap;
-import java.io.ByteArrayOutputStream;
 
 class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegistry.ActivityResultListener, ActivityAware {
     var mActivity: Activity? = null
@@ -197,40 +194,52 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
             val addressComponents = place.addressComponents
             if (addressComponents != null) {
                 var locality: String = ""
+                var province: String = ""
                 var country: String = ""
                 for (address in addressComponents.asList()) {
                     if (address.types.contains("locality")) {
-                        val transformed = address.name;
+                        val transformed = address.name
                         locality = transformed
                     } else if (address.types.contains("country")) {
-                        val transformed = address.name;
+                        val transformed = address.name
                         country = transformed
                     } else if (address.types.contains("postal_town") && locality == "") {
-                        val transformed = address.name;
+                        val transformed = address.name
                         locality = transformed
                     } else if (address.types.contains("administrative_area_level_3") && locality == "") {
-                        val transformed = address.name;
+                        val transformed = address.name
                         locality = transformed
                     } else if (address.types.contains("administrative_area_level_2") && locality == "") {
-                        val transformed = address.name;
+                        val transformed = address.name
                         locality = transformed
                     } else if (address.types.contains("administrative_area_level_1") && locality == "") {
-                        val transformed = address.name;
+                        val transformed = address.name
                         locality = transformed
+                    }
+                    if (address.types.contains("administrative_area_level_2") && province == "") {
+                        val transformed = address.name
+                        province = transformed
+                    } else if (address.types.contains("administrative_area_level_3") && province == "") {
+                        val transformed = address.name
+                        province = transformed
+                    } else if (address.types.contains("administrative_area_level_1") && province == "") {
+                        val transformed = address.name
+                        province = transformed
                     }
                 }
                 placeMap.put("locality", locality ?: "")
+                placeMap.put("province", province ?: "")
                 placeMap.put("country", country ?: "")
             }
             val photoMetadatas = place.photoMetadatas
             if (photoMetadatas != null) {
-                val photoRequest = FetchPhotoRequest.builder(photoMetadatas[0]).build();
+                val photoRequest = FetchPhotoRequest.builder(photoMetadatas[0]).build()
                 mPlace?.fetchPhoto(photoRequest)?.addOnSuccessListener { fetchPhotoResponse ->
-                    val bitmap = fetchPhotoResponse.getBitmap();
-                    val stream = ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    val byteArray = stream.toByteArray();
-                    bitmap.recycle();
+                    val bitmap = fetchPhotoResponse.getBitmap()
+                    val stream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                    val byteArray = stream.toByteArray()
+                    bitmap.recycle()
                     placeMap.put("photo", byteArray)
                     mResult?.success(placeMap)
                 }
