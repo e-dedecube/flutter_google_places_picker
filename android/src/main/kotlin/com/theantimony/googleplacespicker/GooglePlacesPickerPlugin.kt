@@ -194,7 +194,9 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
             val addressComponents = place.addressComponents
             if (addressComponents != null) {
                 var locality: String = ""
-                var province: String = ""
+                var province1: String = ""
+                var province2: String = ""
+                var province3: String = ""
                 var country: String = ""
                 for (address in addressComponents.asList()) {
                     if (address.types.contains("locality")) {
@@ -216,19 +218,23 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
                         val transformed = address.name
                         locality = transformed
                     }
-                    if (address.types.contains("administrative_area_level_1") && province == "") {
+                    if (address.types.contains("administrative_area_level_1")) {
                         val transformed = address.name
-                        province = transformed
-                    } else if (address.types.contains("administrative_area_level_2") && province == "") {
+                        province1 = transformed
+                    }
+                    if (address.types.contains("administrative_area_level_2")) {
                         val transformed = address.name
-                        province = transformed
-                    } else if (address.types.contains("administrative_area_level_3") && province == "") {
+                        province2 = transformed
+                    }
+                    if (address.types.contains("administrative_area_level_3")) {
                         val transformed = address.name
-                        province = transformed
+                        province3 = transformed
                     }
                 }
                 placeMap.put("locality", locality ?: "")
-                placeMap.put("province", province ?: "")
+                placeMap.put("province1", province1 ?: "")
+                placeMap.put("province2", province2 ?: "")
+                placeMap.put("province3", province3 ?: "")
                 placeMap.put("country", country ?: "")
             }
             val photoMetadatas = place.photoMetadatas

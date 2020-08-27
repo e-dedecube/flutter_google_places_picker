@@ -16,7 +16,9 @@ class Place {
   Image photo;
   Map info;
   String locality;
-  String province;
+  String province1;
+  String province2;
+  String province3;
   String country;
 }
 
@@ -99,8 +101,14 @@ class PluginGooglePlacePicker {
     if (placeMap.containsKey("locality")) {
       place.locality = placeMap["locality"];
     }
-    if (placeMap.containsKey("province")) {
-      place.province = placeMap["province"];
+    if (placeMap.containsKey("province1")) {
+      place.province1 = placeMap["province1"];
+    }
+    if (placeMap.containsKey("province2")) {
+      place.province2 = placeMap["province2"];
+    }
+    if (placeMap.containsKey("province3")) {
+      place.province3 = placeMap["province3"];
     }
     if (placeMap.containsKey("country")) {
       place.country = placeMap["country"];

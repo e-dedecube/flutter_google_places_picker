@@ -126,7 +126,9 @@ NSDictionary *filterTypes;
 
     if (place.addressComponents != nil) {
         NSString *locality = @"";
-         NSString *province = @"";
+         NSString *province1 = @"";
+         NSString *province2 = @"";
+         NSString *province3 = @"";
         NSString *country = @"";
         for (GMSAddressComponent *component in place.addressComponents) {
             NSArray *types = component.types;
@@ -143,16 +145,20 @@ NSDictionary *filterTypes;
             } else if ([types containsObject:@"administrative_area_level_1"] && [locality isEqualToString:@""]) {
                locality = component.name;
             }
-            if ([types containsObject:@"administrative_area_level_1"] && [province isEqualToString:@""]) {
-               province = component.name;
-            } else if ([types containsObject:@"administrative_area_level_2"] && [province isEqualToString:@""]) {
-               province = component.name;
-            } else if ([types containsObject:@"administrative_area_level_3"] && [province isEqualToString:@""]) {
-               province = component.name;
+            if ([types containsObject:@"administrative_area_level_1"]) {
+               province1 = component.name;
+            } 
+            if ([types containsObject:@"administrative_area_level_2"]) {
+               province2 = component.name;
+            } 
+            if ([types containsObject:@"administrative_area_level_3"]) {
+               province3 = component.name;
             }
         }
         [placeMap setObject:locality forKey:@"locality"];
-        [placeMap setObject:province forKey:@"province"];
+        [placeMap setObject:province1 forKey:@"province1"];
+        [placeMap setObject:province2 forKey:@"province2"];
+        [placeMap setObject:province3 forKey:@"province3"];
         [placeMap setObject:country forKey:@"country"];
     }
                   
