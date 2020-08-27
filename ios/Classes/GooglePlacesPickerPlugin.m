@@ -143,11 +143,11 @@ NSDictionary *filterTypes;
             } else if ([types containsObject:@"administrative_area_level_1"] && [locality isEqualToString:@""]) {
                locality = component.name;
             }
-            if ([types containsObject:@"administrative_area_level_2"] && [province isEqualToString:@""]) {
+            if ([types containsObject:@"administrative_area_level_1"] && [province isEqualToString:@""]) {
+               province = component.name;
+            } else if ([types containsObject:@"administrative_area_level_2"] && [province isEqualToString:@""]) {
                province = component.name;
             } else if ([types containsObject:@"administrative_area_level_3"] && [province isEqualToString:@""]) {
-               province = component.name;
-            } else if ([types containsObject:@"administrative_area_level_1"] && [province isEqualToString:@""]) {
                province = component.name;
             }
         }
