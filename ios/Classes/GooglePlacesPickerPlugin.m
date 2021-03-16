@@ -89,8 +89,8 @@ NSDictionary *filterTypes;
         CLLocationCoordinate2D neCoordinate = CLLocationCoordinate2DMake(neLat, neLng);
         CLLocationCoordinate2D swCoordinate = CLLocationCoordinate2DMake(swLat, swLng);
         
-        GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:neCoordinate coordinate:swCoordinate];
-        autocompleteController.autocompleteBounds = bounds;
+        // GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:neCoordinate coordinate:swCoordinate];
+        // autocompleteController.autocompleteBounds = bounds;
         
     }
     
