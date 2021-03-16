@@ -79,7 +79,7 @@ NSDictionary *filterTypes;
             neLng = [restriction[@"northEastLng"] doubleValue];
             swLat = [restriction[@"southWestLat"] doubleValue];
             swLng = [restriction[@"southWestLng"] doubleValue];
-            autocompleteController.autocompleteBoundsMode = kGMSAutocompleteBoundsModeRestrict;
+            // autocompleteController.autocompleteBoundsMode = kGMSAutocompleteBoundsModeRestrict;
         } else {
             neLat = [boundsDictionary[@"northEastLat"] doubleValue];
             neLng = [boundsDictionary[@"northEastLng"] doubleValue];
