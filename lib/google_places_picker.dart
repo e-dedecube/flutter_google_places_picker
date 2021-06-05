@@ -1,25 +1,24 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class Place {
-  double latitude;
-  double longitude;
-  String id;
-  String name;
-  String address;
-  String phoneNumber;
-  String website;
-  List<String> openingHoursWeekday;
-  List<String> types;
-  Image photo;
-  Map info;
-  String locality;
-  String province1;
-  String province2;
-  String province3;
-  String country;
+  double? latitude;
+  double? longitude;
+  String? id;
+  String? name;
+  String? address;
+  String? phoneNumber;
+  String? website;
+  List<String>? openingHoursWeekday;
+  List<String>? types;
+  Image? photo;
+  Map? info;
+  String? locality;
+  String? province1;
+  String? province2;
+  String? province3;
+  String? country;
 }
 
 enum PlaceAutocompleteMode { MODE_OVERLAY, MODE_FULLSCREEN }
@@ -27,17 +26,17 @@ enum PlaceAutocompleteMode { MODE_OVERLAY, MODE_FULLSCREEN }
 enum TypeFilter { ADDRESS, CITIES, ESTABLISHMENT, GEOCODE, REGIONS, BOTH }
 
 class LocationBias {
-  double northEastLat;
-  double northEastLng;
-  double southWestLat;
-  double southWestLng;
+  double? northEastLat;
+  double? northEastLng;
+  double? southWestLat;
+  double? southWestLng;
 }
 
 class LocationRestriction {
-  double northEastLat;
-  double northEastLng;
-  double southWestLat;
-  double southWestLng;
+  double? northEastLat;
+  double? northEastLng;
+  double? southWestLat;
+  double? southWestLng;
 }
 
 class PluginGooglePlacePicker {
@@ -45,11 +44,11 @@ class PluginGooglePlacePicker {
       const MethodChannel('plugin_google_place_picker');
 
   static Future<Place> showAutocomplete({
-    PlaceAutocompleteMode mode,
-    LocationBias bias,
-    LocationRestriction restriction,
-    TypeFilter typeFilter,
-    String countryCode,
+    PlaceAutocompleteMode? mode,
+    LocationBias? bias,
+    LocationRestriction? restriction,
+    TypeFilter? typeFilter,
+    String? countryCode,
   }) async {
     var argMap = {
       "mode": mode == PlaceAutocompleteMode.MODE_OVERLAY ? 71 : 72,
@@ -58,13 +57,13 @@ class PluginGooglePlacePicker {
       "type": _convertFilterTypeToString(typeFilter),
       "country": countryCode
     };
-    final Map placeMap =
-        await _channel.invokeMethod('showAutocomplete', argMap);
+    final Map placeMap = await (_channel.invokeMethod(
+        'showAutocomplete', argMap) as FutureOr<Map<dynamic, dynamic>>);
     return _initPlaceFromMap(placeMap);
   }
 
   static Future<void> initialize(
-      {String androidApiKey, String iosApiKey}) async {
+      {String? androidApiKey, String? iosApiKey}) async {
     await _channel.invokeMethod(
         'initialize', {"androidApiKey": androidApiKey, "iosApiKey": iosApiKey});
   }
@@ -116,7 +115,7 @@ class PluginGooglePlacePicker {
     return place;
   }
 
-  static String _convertFilterTypeToString(TypeFilter type) {
+  static String? _convertFilterTypeToString(TypeFilter? type) {
     if (type == null) {
       return null;
     }
@@ -134,10 +133,9 @@ class PluginGooglePlacePicker {
       case TypeFilter.BOTH:
         return "geocode|establishment";
     }
-    return "";
   }
 
-  static Map<String, double> _convertLocationBiasToMap(LocationBias bias) {
+  static Map<String, double>? _convertLocationBiasToMap(LocationBias? bias) {
     if (bias == null) {
       return null;
     }
@@ -149,8 +147,8 @@ class PluginGooglePlacePicker {
     };
   }
 
-  static Map<String, double> _convertLocationRestrictionToMap(
-      LocationRestriction restriction) {
+  static Map<String, double>? _convertLocationRestrictionToMap(
+      LocationRestriction? restriction) {
     if (restriction == null) {
       return null;
     }
