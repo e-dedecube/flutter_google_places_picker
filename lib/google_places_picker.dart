@@ -44,7 +44,7 @@ class PluginGooglePlacePicker {
       const MethodChannel('plugin_google_place_picker');
 
   static Future<Place> showAutocomplete({
-    PlaceAutocompleteMode? mode,
+    required PlaceAutocompleteMode mode,
     LocationBias? bias,
     LocationRestriction? restriction,
     TypeFilter? typeFilter,
@@ -57,8 +57,8 @@ class PluginGooglePlacePicker {
       "type": _convertFilterTypeToString(typeFilter),
       "country": countryCode
     };
-    final Map placeMap = await (_channel.invokeMethod(
-        'showAutocomplete', argMap) as FutureOr<Map<dynamic, dynamic>>);
+    final Map placeMap =
+        await (_channel.invokeMethod('showAutocomplete', argMap));
     return _initPlaceFromMap(placeMap);
   }
 
