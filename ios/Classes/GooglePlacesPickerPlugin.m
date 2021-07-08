@@ -144,6 +144,10 @@ NSDictionary *filterTypes;
                locality = component.name;
             } else if ([types containsObject:@"administrative_area_level_1"] && [locality isEqualToString:@""]) {
                locality = component.name;
+            } else if ([types containsObject:@"establishment"] && [locality isEqualToString:@""]) {
+               locality = component.name;
+            } else if ([types containsObject:@"natural_feature"] && [locality isEqualToString:@""]) {
+               locality = component.name;
             }
             if ([types containsObject:@"administrative_area_level_1"]) {
                province1 = component.name;
