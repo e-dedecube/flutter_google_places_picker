@@ -217,7 +217,13 @@ class GooglePlacesPickerPlugin() : FlutterPlugin, MethodCallHandler, PluginRegis
                     } else if (address.types.contains("administrative_area_level_1") && locality == "") {
                         val transformed = address.name
                         locality = transformed
-                    }
+                    } else if (address.types.contains("establishment") && locality == "") {
+                        val transformed = address.name
+                        locality = transformed
+                    } else if (address.types.contains("natural_feature") && locality == "") {
+                        val transformed = address.name
+                        locality = transformed
+                    }                    
                     if (address.types.contains("administrative_area_level_1")) {
                         val transformed = address.name
                         province1 = transformed
