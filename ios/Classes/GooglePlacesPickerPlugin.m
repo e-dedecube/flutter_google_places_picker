@@ -167,17 +167,22 @@ NSDictionary *filterTypes;
     }
                   
     if (place.photos != nil) {
-        [[GMSPlacesClient sharedClient] loadPlacePhoto:place.photos[0] callback:^(UIImage * _Nullable photo, NSError * _Nullable error) {
-          if (error == nil) {
-              NSData* data = UIImagePNGRepresentation(photo);
-              if (data) {
-                  [placeMap setObject:[FlutterStandardTypedData typedDataWithBytes:data] forKey:@"photo"];
-                  
-                  NSMutableDictionary *mutablePlaceMap = placeMap.mutableCopy;
-                  _result(mutablePlaceMap);
+        GMSPlacesClient *placesClient = [GMSPlacesClient sharedClient];
+        if (placesClient != nil) {
+            [placesClient loadPlacePhoto:place.photos[0] callback:^(UIImage * _Nullable photo, NSError * _Nullable error) {
+              if (error == nil && photo != nil) {
+                  NSData* data = UIImagePNGRepresentation(photo);
+                  if (data) {
+                      [placeMap setObject:[FlutterStandardTypedData typedDataWithBytes:data] forKey:@"photo"];
+                  }
               }
-          }
-        }];
+              NSMutableDictionary *mutablePlaceMap = placeMap.mutableCopy;
+              _result(mutablePlaceMap);
+            }];
+        } else {
+            NSMutableDictionary *mutablePlaceMap = placeMap.mutableCopy;
+            _result(mutablePlaceMap);
+        }
     } else {
         NSMutableDictionary *mutablePlaceMap = placeMap.mutableCopy;
         _result(mutablePlaceMap);
